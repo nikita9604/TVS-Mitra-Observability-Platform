@@ -1,9 +1,9 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    const supabase = await createServerClient()
+    const supabase = await createClient()
 
     // Get customer feedback data
     const { data: feedback, error } = await supabase
@@ -12,7 +12,24 @@ export async function GET() {
 
     if (error) {
       console.error("Error fetching customer feedback:", error)
-      return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
+      return NextResponse.json({ error: error.message || "Failed to fetch data" }, { status: 500 })
+    }
+    
+    if (!feedback || feedback.length === 0) {
+      return NextResponse.json({
+        totalFeedback: 0,
+        highSatisfactionCount: 0,
+        mediumSatisfactionCount: 0,
+        lowSatisfactionCount: 0,
+        avgSatisfaction: 0,
+        highSatisfactionPercentage: 0,
+        mediumSatisfactionPercentage: 0,
+        lowSatisfactionPercentage: 0,
+        satisfactionDistribution: [],
+        improvementAreas: [],
+        satisfactionTrend: "No Data",
+        topImprovementArea: "None",
+      })
     }
 
     const totalFeedback = feedback.length

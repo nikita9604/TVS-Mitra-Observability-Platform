@@ -4,14 +4,23 @@ import { NextResponse } from "next/server"
 export async function GET() {
   try {
     const supabase = await createClient()
+    
+    console.log("[v0] Overview API - Fetching counts...")
 
-    const [{ count: totalApplications }, { count: totalSessions }, { count: totalFeedback }, { count: totalModels }] =
-      await Promise.all([
+    const [
+      { count: totalApplications, error: appError }, 
+      { count: totalSessions, error: sessError }, 
+      { count: totalFeedback, error: feedError }, 
+      { count: totalModels, error: modelError }
+    ] = await Promise.all([
         supabase.from("loan_applications").select("*", { count: "exact", head: true }),
         supabase.from("user_sessions").select("*", { count: "exact", head: true }),
         supabase.from("customer_feedback").select("*", { count: "exact", head: true }),
         supabase.from("model_evaluation_metrics").select("*", { count: "exact", head: true }),
       ])
+    
+    console.log("[v0] Counts:", { totalApplications, totalSessions, totalFeedback, totalModels })
+    console.log("[v0] Errors:", { appError, sessError, feedError, modelError })
 
     // Get comprehensive loan application metrics
     const { data: loanData } = await supabase

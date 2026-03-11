@@ -1,14 +1,22 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    const supabase = await createServerClient()
+    const supabase = await createClient()
+    
+    console.log("[v0] Demographics API - Fetching applications...")
 
-    const { data: applications } = await supabase.from("loan_applications").select(`
+    const { data: applications, error } = await supabase.from("loan_applications").select(`
         age, state, qualification, employment_type, 
         is_approved, make_code, past_loans
       `)
+    
+    console.log("[v0] Applications fetched:", applications?.length, "rows")
+    if (error) {
+      console.log("[v0] Demographics error:", error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
 
     const totalApplications = applications?.length || 0
 
