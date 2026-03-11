@@ -1,18 +1,41 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    const supabase = await createServerClient()
+    const supabase = await createClient()
+    
+    console.log("[v0] Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "Set" : "Not set")
+    console.log("[v0] Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "Set" : "Not set")
 
     // Get customer feedback data
     const { data: feedback, error } = await supabase
       .from("customer_feedback")
       .select("overall_satisfaction_rating, improvement_areas")
 
+    console.log("[v0] Feedback data:", feedback?.length, "rows")
+    console.log("[v0] Error:", error)
+
     if (error) {
       console.error("Error fetching customer feedback:", error)
-      return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
+      return NextResponse.json({ error: error.message || "Failed to fetch data" }, { status: 500 })
+    }
+    
+    if (!feedback || feedback.length === 0) {
+      return NextResponse.json({
+        totalFeedback: 0,
+        highSatisfactionCount: 0,
+        mediumSatisfactionCount: 0,
+        lowSatisfactionCount: 0,
+        avgSatisfaction: 0,
+        highSatisfactionPercentage: 0,
+        mediumSatisfactionPercentage: 0,
+        lowSatisfactionPercentage: 0,
+        satisfactionDistribution: [],
+        improvementAreas: [],
+        satisfactionTrend: "No Data",
+        topImprovementArea: "None",
+      })
     }
 
     const totalFeedback = feedback.length
