@@ -9,7 +9,7 @@ Built a customer-friendly chatbot with its observability platform to track user 
 
 ### Detailed Overview
 
-   - Chatbot is live at: **[https://tvs-mitra-observability-platform-phi.vercel.app/](https://tvs-mitra-observability-platform-phi.vercel.app/)**
+   - Observability Platform is live at: **[https://tvs-mitra-observability-platform-phi.vercel.app/](https://tvs-mitra-observability-platform-phi.vercel.app/)**
    - Project is live at: **[https://vercel.com/nikitarath-s-projects/tvs-mitra-observability-platform](https://vercel.com/nikitarath-s-projects/tvs-mitra-observability-platform)**
    - Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
 
